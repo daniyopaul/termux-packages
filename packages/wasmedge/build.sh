@@ -1,12 +1,11 @@
-TERMUX_PKG_HOMEPAGE=https://wasmedge.org/
+TERMUX_PKG_HOMEPAGE=https://wasmedge.org
 TERMUX_PKG_DESCRIPTION="A lightweight, high-performance, and extensible WebAssembly runtime"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_LICENSE_FILE="LICENSE, LICENSE.spdx"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=0.9.1
-TERMUX_PKG_REVISION=1
-TERMUX_PKG_SRCURL=https://github.com/WasmEdge/WasmEdge/archive/refs/tags/${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_SHA256=b4a48bf5a009d6c4bf99479f87bf3bf8ebd6386d636fdeb721540456330dce59
+TERMUX_PKG_VERSION=0.10.1
+TERMUX_PKG_SRCURL=https://github.com/WasmEdge/WasmEdge/archive/${TERMUX_PKG_VERSION}.tar.gz
+TERMUX_PKG_SHA256=f87bf06be0b94e8fcf974b6029f1f7ab46fd7526de33bff70d9cf4117512d07a
 TERMUX_PKG_DEPENDS="libc++, libllvm"
 TERMUX_PKG_BUILD_DEPENDS="boost-headers, boost-static, libllvm-static, libpolly, lld, llvm"
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
