@@ -77,7 +77,7 @@ diff -uNr WasmEdge/lib/host/wasi/wasifunc.cpp WasmEdge.mod/lib/host/wasi/wasifun
    }
  
 -  uint32_t *InnerFlagSizePtr = MemInst->getPointer<uint32_t *>(FlagSizePtr);
-+  socklen_t *InnerFlagSizePtr = MemInst->getPointer<uint32_t *>(FlagSizePtr);
++  socklen_t *InnerFlagSizePtr = MemInst->getPointer<socklen_t *>(FlagSizePtr);
    if (InnerFlagSizePtr == nullptr) {
      return __WASI_ERRNO_FAULT;
    }
