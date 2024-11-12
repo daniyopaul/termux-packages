@@ -3,16 +3,18 @@ TERMUX_PKG_DESCRIPTION="Cross platform, open source .NET framework"
 TERMUX_PKG_LICENSE="custom"
 TERMUX_PKG_LICENSE_FILE="LICENSE"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=6.12.0.122
+TERMUX_PKG_VERSION="6.12.0.199"
 TERMUX_PKG_REVISION=1
 TERMUX_PKG_SRCURL=https://download.mono-project.com/sources/mono/mono-${TERMUX_PKG_VERSION}.tar.xz
-TERMUX_PKG_SHA256=29c277660fc5e7513107aee1cbf8c5057c9370a4cdfeda2fc781be6986d89d23
-TERMUX_PKG_DEPENDS="krb5, zlib"
+TERMUX_PKG_SHA256=c0850d545353a6ba2238d45f0914490c6a14a0017f151d3905b558f033478ef5
+TERMUX_PKG_DEPENDS="krb5, mono-libs, zlib"
+TERMUX_PKG_HOSTBUILD=true
+# https://github.com/mono/mono/issues/21796
+TERMUX_PKG_AUTO_UPDATE=false
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
 --disable-btls
 --without-ikvm-native
 "
-TERMUX_PKG_HOSTBUILD=true
 
 termux_step_post_get_source() {
 	rm -f external/bdwgc/config.status
@@ -24,7 +26,7 @@ termux_step_host_build() {
 
 	$TERMUX_PKG_SRCDIR/configure --prefix=$_PREFIX_FOR_BUILD \
 		$TERMUX_PKG_EXTRA_CONFIGURE_ARGS
-	make -j $TERMUX_MAKE_PROCESSES
+	make -j $TERMUX_PKG_MAKE_PROCESSES
 	make install
 }
 
@@ -36,10 +38,12 @@ termux_step_pre_configure() {
 }
 
 termux_step_post_make_install() {
-	local _PREFIX_FOR_BUILD=$TERMUX_PKG_HOSTBUILD_DIR/prefix
+	pushd $TERMUX_PKG_HOSTBUILD_DIR/prefix/lib/mono
+	find . -name '*.so' -exec rm -f \{\} \;
+	rm -f ./4.5/mono-shlib-cop.exe.config
+	cp -rT . $TERMUX_PREFIX/lib/mono
+	popd
 
-	find $_PREFIX_FOR_BUILD/lib/mono -name '*.so' -exec rm -f \{\} \;
-	cp -rT $_PREFIX_FOR_BUILD/lib/mono $TERMUX_PREFIX/lib/mono
-	# XXX: Map libc to libc.so rather than libc.so.6
-	sed -i "s/libc.so.6/libc.so/g" $TERMUX_PREFIX/etc/mono/config
+	# Strip off SOVERSION suffix for shared libraries.
+	sed -i -E 's/\.so\.[0-9]+/.so/g' $TERMUX_PREFIX/etc/mono/config
 }

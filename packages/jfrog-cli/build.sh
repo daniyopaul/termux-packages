@@ -2,9 +2,9 @@ TERMUX_PKG_HOMEPAGE=https://jfrog.com/getcli
 TERMUX_PKG_DESCRIPTION="A CLI for JFrog products"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION="2.24.2"
+TERMUX_PKG_VERSION="2.71.3"
 TERMUX_PKG_SRCURL=https://github.com/jfrog/jfrog-cli/archive/v$TERMUX_PKG_VERSION.tar.gz
-TERMUX_PKG_SHA256=3d8873a2e1ef639b64228f6a135e2e6e9cae38741a046165c26fc9c4451a5a16
+TERMUX_PKG_SHA256=e5154a1d2afa91735ed000fa3ae37afbe33f49a328c665047c6af1afb4d0540e
 TERMUX_PKG_AUTO_UPDATE=true
 
 termux_step_make() {
@@ -12,6 +12,9 @@ termux_step_make() {
 	export GOPATH=$TERMUX_PKG_BUILDDIR
 
 	cd $TERMUX_PKG_SRCDIR
+	go mod init || :
+	go mod tidy
+
 	go build \
 		-o "$TERMUX_PREFIX/bin/jfrog" \
 		-tags "linux extended" \

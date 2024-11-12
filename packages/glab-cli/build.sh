@@ -1,10 +1,10 @@
-TERMUX_PKG_HOMEPAGE=https://glab-cli.io
+TERMUX_PKG_HOMEPAGE=https://gitlab.com/gitlab-org/cli
 TERMUX_PKG_DESCRIPTION="A GitLab CLI tool bringing GitLab to your command line"
 TERMUX_PKG_LICENSE="MIT"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION="1.22.0"
-TERMUX_PKG_SRCURL=https://github.com/profclems/glab/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_SHA256=4b700d46cf9ee8fe6268e7654326053f4366aa3e072b5c3f3d243930a6e89edc
+TERMUX_PKG_VERSION="1.48.0"
+TERMUX_PKG_SRCURL=https://gitlab.com/gitlab-org/cli/-/archive/v${TERMUX_PKG_VERSION}/cli-${TERMUX_PKG_VERSION}.tar.bz2
+TERMUX_PKG_SHA256=d05324d5f4bd6a2c9d8a5e51e2d4bc5cc0524265e42551cddf70d9e96f761646
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_EXTRA_MAKE_ARGS="GLAB_VERSION=${TERMUX_PKG_VERSION}"
@@ -15,23 +15,17 @@ termux_step_pre_configure() {
 
 termux_step_make_install() {
 	install -Dm700 -t "${TERMUX_PREFIX}"/bin bin/glab
+
+	install -Dm644 /dev/null "$TERMUX_PREFIX"/share/bash-completion/completions/glab.bash
+	install -Dm644 /dev/null "$TERMUX_PREFIX"/share/zsh/site-functions/_glab
+	install -Dm644 /dev/null "$TERMUX_PREFIX"/share/fish/vendor_completions.d/glab.fish
 }
 
 termux_step_create_debscripts() {
 	cat <<- EOF > ./postinst
 		#!${TERMUX_PREFIX}/bin/sh
-		mkdir -p ${TERMUX_PREFIX}/share/bash-completion/completions
-		mkdir -p ${TERMUX_PREFIX}/share/zsh/site-functions
-		mkdir -p ${TERMUX_PREFIX}/share/fish/vendor_completions.d
 		glab completion -s bash > ${TERMUX_PREFIX}/share/bash-completion/completions/glab.bash
 		glab completion -s zsh > ${TERMUX_PREFIX}/share/zsh/site-functions/_glab
 		glab completion -s fish > ${TERMUX_PREFIX}/share/fish/vendor_completions.d/glab.fish
-	EOF
-
-	cat <<- EOF > ./prerm
-		#!${TERMUX_PREFIX}/bin/sh
-		rm -f ${TERMUX_PREFIX}/share/bash-completion/completions/glab.bash
-		rm -f ${TERMUX_PREFIX}/share/zsh/site-functions/_glab
-		rm -f ${TERMUX_PREFIX}/share/fish/vendor_completions.d/glab.fish
 	EOF
 }

@@ -1,25 +1,23 @@
 TERMUX_PKG_HOMEPAGE=https://lxqt.github.io
 TERMUX_PKG_DESCRIPTION="The LXQt desktop panel"
 TERMUX_PKG_LICENSE="LGPL-2.1"
-TERMUX_PKG_MAINTAINER="Simeon Huang <symeon@librehat.com>"
-TERMUX_PKG_VERSION=1.1.0
-TERMUX_PKG_REVISION=2
+TERMUX_PKG_MAINTAINER="@termux"
+TERMUX_PKG_VERSION="2.1.1"
 TERMUX_PKG_SRCURL="https://github.com/lxqt/lxqt-panel/releases/download/${TERMUX_PKG_VERSION}/lxqt-panel-${TERMUX_PKG_VERSION}.tar.xz"
-TERMUX_PKG_SHA256=a7bda46633cf473e38777078c4ad3530cae9ef5f80a497e7c4484ec3140aaf85
-TERMUX_PKG_DEPENDS="qt5-qtbase, qt5-qtx11extras, kwindowsystem, liblxqt, libsysstat, lxqt-globalkeys, libdbusmenu-qt, libxcb, pulseaudio, lxmenu-data, libxtst"
-TERMUX_PKG_BUILD_DEPENDS="lxqt-build-tools, qt5-qtbase-cross-tools, qt5-qttools-cross-tools"
+TERMUX_PKG_SHA256=176d1638f2bc0669afc0f3ff34da3faa543f2e2dac5122fd0ec235eea98986d5
+TERMUX_PKG_DEPENDS="kf6-kwindowsystem, layer-shell-qt, libc++, libdbusmenu-lxqt, liblxqt, libqtxdg, libsysstat, libxcb, libxkbcommon, libxtst, libx11, lxqt-globalkeys, lxqt-menu-data, pulseaudio, qt6-qtbase, xcb-util, xcb-util-image"
+TERMUX_PKG_BUILD_DEPENDS="lxqt-build-tools, qt6-qttools"
 # TODO
 # CPULOAD and NETWORKMONITOR require libstatgrab
 # MOUNT plugin requires KF5Solid
 # SENSORS plugin requires lm_sensors
-# COLORPICKER gives an error when building: no member named 'setAccessibleName' in 'QMenu'
 TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
--DCOLORPICKER_PLUGIN=OFF
 -DCPULOAD_PLUGIN=OFF
 -DNETWORKMONITOR_PLUGIN=OFF
 -DMOUNT_PLUGIN=OFF
 -DSENSORS_PLUGIN=OFF
 -DVOLUME_USE_ALSA=OFF
+-DQt6LinguistTools_DIR=${TERMUX_PREFIX}/opt/qt6/cross/lib/cmake/Qt6LinguistTools
 "
 TERMUX_PKG_AUTO_UPDATE=true
 

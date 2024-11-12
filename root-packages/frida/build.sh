@@ -2,22 +2,23 @@ TERMUX_PKG_HOMEPAGE=https://www.frida.re/
 TERMUX_PKG_DESCRIPTION="Dynamic instrumentation toolkit for developers, reverse-engineers, and security researchers"
 TERMUX_PKG_LICENSE="wxWindows"
 TERMUX_PKG_MAINTAINER="Henrik Grimler @Grimler91"
-_MAJOR_VERSION=15
-_MINOR_VERSION=2
-_MICRO_VERSION=2
+_MAJOR_VERSION=16
+_MINOR_VERSION=1
+_MICRO_VERSION=1
 TERMUX_PKG_VERSION=${_MAJOR_VERSION}.${_MINOR_VERSION}.${_MICRO_VERSION}
 TERMUX_PKG_GIT_BRANCH=$TERMUX_PKG_VERSION
-TERMUX_PKG_SRCURL=https://github.com/frida/frida.git
+TERMUX_PKG_SRCURL=git+https://github.com/frida/frida
+TERMUX_PKG_AUTO_UPDATE=false
 TERMUX_PKG_DEPENDS="libiconv"
 TERMUX_PKG_BUILD_DEPENDS="openssl"
 TERMUX_PKG_BUILD_IN_SRC=true
 TERMUX_PKG_NO_STATICSPLIT=true
 TERMUX_PKG_EXTRA_MAKE_ARGS="ANDROID_NDK_ROOT=$NDK"
 TERMUX_PKG_CONFFILES="var/service/frida-server/run var/service/frida-server/down"
-TERMUX_PKG_HOSTBUILD=true
 TERMUX_PKG_CONFLICTS="frida-tools (<< 15.1.24-1)"
 TERMUX_PKG_BREAKS="frida-server (<< 15.1.24)"
 TERMUX_PKG_REPLACES="frida-tools (<< 15.1.24-1), frida-server (<< 15.1.24)"
+TERMUX_PKG_HOSTBUILD=true
 
 termux_step_host_build() {
 	termux_setup_nodejs
@@ -33,13 +34,13 @@ termux_step_host_build() {
 		$TERMUX_PKG_HOSTBUILD_DIR/
 }
 
+
 termux_step_pre_configure () {
 	termux_setup_nodejs
 
-	_PYTHON_VERSION=$(source $TERMUX_SCRIPTDIR/packages/python/build.sh; echo $_MAJOR_VERSION)
-	export TERMUX_PKG_EXTRA_MAKE_ARGS+=" PYTHON=/usr/bin/python${_PYTHON_VERSION}"
+	export TERMUX_PKG_EXTRA_MAKE_ARGS+=" PYTHON=/usr/bin/python${TERMUX_PYTHON_VERSION}"
 	sed -e "s%@TERMUX_PREFIX@%$TERMUX_PREFIX%g" \
-		-e "s%@PYTHON_VERSION@%$_PYTHON_VERSION%g" \
+		-e "s%@PYTHON_VERSION@%$TERMUX_PYTHON_VERSION%g" \
 		$TERMUX_PKG_BUILDER_DIR/frida-python-version.diff | patch -Np1
 }
 

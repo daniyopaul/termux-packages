@@ -2,11 +2,14 @@ TERMUX_PKG_HOMEPAGE=https://github.com/facebookincubator/below
 TERMUX_PKG_DESCRIPTION="An interactive tool to view and record historical system data"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=0.5.0
+TERMUX_PKG_VERSION="0.8.1"
+TERMUX_PKG_REVISION=2
 TERMUX_PKG_SRCURL=https://github.com/facebookincubator/below/archive/refs/tags/v${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_SHA256=9e76d066ce4815b8c51c720375a29d8b0a97a7890fd80602bbe49968573adeb5
+TERMUX_PKG_SHA256=bfeb9cd911e0477a5428ee0b6cbf7cbdc7eba90b716ac1e4f6cbadcde2ffbcb1
 TERMUX_PKG_DEPENDS="libelf, zlib"
 TERMUX_PKG_BUILD_IN_SRC=true
+TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 
 # ```
 # error[E0308]: mismatched types
@@ -22,17 +25,14 @@ termux_step_pre_configure() {
 	: "${CARGO_HOME:=$HOME/.cargo}"
 	export CARGO_HOME
 
+	# rust 1.82.0
+	export RUSTFLAGS+=" -L${TERMUX_PREFIX}/lib"
+
 	cargo fetch --target $CARGO_TARGET_NAME
 
 	local d p
-	for d in $CARGO_HOME/registry/src/github.com-*/libbpf-sys-*; do
+	for d in $CARGO_HOME/registry/src/*/libbpf-sys-*; do
 		for p in libbpf-sys-0.6.0-1-libbpf-include-linux-{compiler,types}.h.diff; do
-			patch --silent -p1 -d ${d} \
-				< "$TERMUX_PKG_BUILDER_DIR/${p}" || :
-		done
-	done
-	for d in $CARGO_HOME/registry/src/github.com-*/nix-*; do
-		for p in nix-{0.22.0,0.23.1}-src-sys-statfs.rs.diff; do
 			patch --silent -p1 -d ${d} \
 				< "$TERMUX_PKG_BUILDER_DIR/${p}" || :
 		done
@@ -47,7 +47,7 @@ termux_step_pre_configure() {
 }
 
 termux_step_make() {
-	cargo build --jobs $TERMUX_MAKE_PROCESSES --target $CARGO_TARGET_NAME --release
+	cargo build --jobs $TERMUX_PKG_MAKE_PROCESSES --target $CARGO_TARGET_NAME --release
 }
 
 termux_step_make_install() {

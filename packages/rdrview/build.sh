@@ -2,25 +2,13 @@ TERMUX_PKG_HOMEPAGE=https://github.com/eafer/rdrview
 TERMUX_PKG_DESCRIPTION="Command line tool to extract the main content from a webpage"
 TERMUX_PKG_LICENSE="Apache-2.0"
 TERMUX_PKG_MAINTAINER="@termux"
-_COMMIT=9bde19f9e53562790b363bb2e3b15707c8c67676
-TERMUX_PKG_VERSION=2021.09.12
-TERMUX_PKG_REVISION=2
-TERMUX_PKG_SRCURL=https://github.com/eafer/rdrview.git
-TERMUX_PKG_GIT_BRANCH=master
+TERMUX_PKG_VERSION="1:0.1.3"
+TERMUX_PKG_SRCURL=https://github.com/eafer/rdrview/archive/refs/tags/v${TERMUX_PKG_VERSION#*:}.tar.gz
+TERMUX_PKG_SHA256=d0c78793f94867e9251fc3fe373026ae6ec14c02482572f5d03399891a0a83cc
+TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_PKG_UPDATE_TAG_TYPE="newest-tag"
 TERMUX_PKG_DEPENDS="libcurl, libiconv, libseccomp, libxml2"
 TERMUX_PKG_BUILD_IN_SRC=true
-
-termux_step_post_get_source() {
-	git fetch --unshallow
-	git checkout $_COMMIT
-
-	local version="$(git log -1 --format=%cs | sed 's/-/./g')"
-	if [ "$version" != "$TERMUX_PKG_VERSION" ]; then
-		echo -n "ERROR: The specified version \"$TERMUX_PKG_VERSION\""
-		echo " is different from what is expected to be: \"$version\""
-		return 1
-	fi
-}
 
 termux_step_pre_configure() {
 	LDFLAGS+=" -liconv"

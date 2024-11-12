@@ -1,10 +1,11 @@
 TERMUX_PKG_HOMEPAGE=https://memcached.org/
 TERMUX_PKG_DESCRIPTION="Free & open source, high-performance, distributed memory object caching system"
-TERMUX_PKG_LICENSE="GPL-2.0"
+TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=1.6.12
+TERMUX_PKG_VERSION="1.6.32"
 TERMUX_PKG_SRCURL=https://www.memcached.org/files/memcached-$TERMUX_PKG_VERSION.tar.gz
-TERMUX_PKG_SHA256=f291a35f82ef9756ed1d952879ef5f4be870f932bdfcb2ab61356609abf82346
+TERMUX_PKG_SHA256=4ab234219865191e8d1ba57a2f9167d8b573248fa4ff00b4d8296be13d24a82c
+TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_DEPENDS="libevent, libsasl"
 TERMUX_PKG_BREAKS="memcached-dev"
 TERMUX_PKG_REPLACES="memcached-dev"

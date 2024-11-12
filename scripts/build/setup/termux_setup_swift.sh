@@ -5,7 +5,7 @@ termux_setup_swift() {
 	if [ "$TERMUX_ON_DEVICE_BUILD" = "false" ]; then
 		local TERMUX_SWIFT_VERSION=$(. $TERMUX_SCRIPTDIR/packages/swift/build.sh; echo $TERMUX_PKG_VERSION)
 		local SWIFT_RELEASE=$(. $TERMUX_SCRIPTDIR/packages/swift/build.sh; echo $SWIFT_RELEASE)
-		local SWIFT_BIN="swift-$TERMUX_SWIFT_VERSION-$SWIFT_RELEASE-ubuntu20.04"
+		local SWIFT_BIN="swift-$TERMUX_SWIFT_VERSION-$SWIFT_RELEASE-ubuntu24.04"
 		local SWIFT_FOLDER
 
 		if [ "${TERMUX_PACKAGES_OFFLINE-false}" = "true" ]; then
@@ -17,15 +17,17 @@ termux_setup_swift() {
 		if [ ! -d "$SWIFT_FOLDER" ]; then
 			local SWIFT_TAR=$TERMUX_PKG_TMPDIR/${SWIFT_BIN}.tar.gz
 			termux_download \
-				https://download.swift.org/swift-$TERMUX_SWIFT_VERSION-release/ubuntu2004/swift-$TERMUX_SWIFT_VERSION-$SWIFT_RELEASE/$SWIFT_BIN.tar.gz \
+				https://download.swift.org/swift-$TERMUX_SWIFT_VERSION-release/ubuntu2404/swift-$TERMUX_SWIFT_VERSION-$SWIFT_RELEASE/$SWIFT_BIN.tar.gz \
 				$SWIFT_TAR \
-				ac1c711985113d0d9daf7bf80205935a0688fb146546690d93c23df54d81cfb7
+				711d1d9e81c6d0dbc36202d9bc9bd491cc5fa79854fd0205ba27f40122b6ad5f
 
 			(cd $TERMUX_PKG_TMPDIR ; tar xf $SWIFT_TAR ; mv $SWIFT_BIN $SWIFT_FOLDER; rm $SWIFT_TAR)
 		fi
 		export SWIFT_BINDIR="$SWIFT_FOLDER/usr/bin"
 		export SWIFT_CROSSCOMPILE_CONFIG="$SWIFT_FOLDER/usr/android-$TERMUX_ARCH.json"
 		if [ ! -z ${TERMUX_STANDALONE_TOOLCHAIN+x} ]; then
+			local MULTILIB_DIR="$TERMUX_ARCH-linux-android"
+			test $TERMUX_ARCH == 'arm' && MULTILIB_DIR+="eabi"
 			cat <<- EOF > $SWIFT_CROSSCOMPILE_CONFIG
 			{ "version": 1,
 			"target": "${SWIFT_TARGET_TRIPLE}",
@@ -34,7 +36,7 @@ termux_setup_swift() {
 			"extra-cc-flags": [ "-fPIC" ],
 			"extra-swiftc-flags": [ "-resource-dir", "${TERMUX_PREFIX}/lib/swift",
 			   "-Xcc", "-I${TERMUX_PREFIX}/include",
-			   "-L${TERMUX_PREFIX}/lib",
+			   "-L${TERMUX_PREFIX}/opt/ndk-multilib/$MULTILIB_DIR/lib", "-L${TERMUX_PREFIX}/lib",
 			   "-tools-directory", "${TERMUX_STANDALONE_TOOLCHAIN}/bin", ],
 			"extra-cpp-flags": [ "-lstdc++" ] }
 			EOF

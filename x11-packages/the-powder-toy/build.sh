@@ -2,23 +2,28 @@ TERMUX_PKG_HOMEPAGE=https://powdertoy.co.uk/
 TERMUX_PKG_DESCRIPTION="The Powder Toy is a free physics sandbox game"
 TERMUX_PKG_LICENSE="GPL-3.0"
 TERMUX_PKG_MAINTAINER="@termux"
-TERMUX_PKG_VERSION=95.0
-TERMUX_PKG_REVISION=18
+TERMUX_PKG_VERSION="98.2.365"
 TERMUX_PKG_SRCURL=https://github.com/ThePowderToy/The-Powder-Toy/archive/v${TERMUX_PKG_VERSION}.tar.gz
-TERMUX_PKG_SHA256=f60c3dc93e4ceddeda92b768e75a2d218f8df3da4a569b7d7cb57fff5515e15b
-TERMUX_PKG_DEPENDS="fftw, libbz2, libc++, libcurl, liblua52, sdl2, libx11, zlib"
-TERMUX_PKG_FOLDERNAME=The-Powder-Toy-${TERMUX_PKG_VERSION}
-TERMUX_PKG_BUILD_IN_SRC=true
+TERMUX_PKG_SHA256=21900b6b022535d0e56126b023538cc4f44b64feceafb5640492618a42a60080
+TERMUX_PKG_AUTO_UPDATE=true
+TERMUX_PKG_DEPENDS="fftw, jsoncpp, libandroid-execinfo, libbz2, libc++, libcurl, libluajit, libpng, sdl2"
+TERMUX_PKG_GROUPS="games"
+TERMUX_PKG_EXTRA_CONFIGURE_ARGS="
+-Dworkaround_elusive_bzip2_lib_dir=$TERMUX_PREFIX/lib
+-Dworkaround_elusive_bzip2_include_dir=$TERMUX_PREFIX/include
+-Db_pie=true
+-Dignore_updates=true
+-Dapp_data=$TERMUX_ANDROID_HOME/.powdertoy
+-Dcan_install=no
+"
 
-termux_step_make() {
-	export CFLAGS="${CFLAGS} -I${TERMUX_PREFIX}/include"
-	export CXXFLAGS="${CFLAGS}"
-	export LINKFLAGS="${LDFLAGS}"
-	scons -j4 --lin --64bit --no-sse --lua52
+termux_step_pre_configure() {
+	LDFLAGS+=" -landroid-execinfo"
 }
 
 termux_step_make_install() {
-	install -Dm755 "${TERMUX_PKG_SRCDIR}/build/powder64-legacy" "${TERMUX_PREFIX}/bin/the-powder-toy"
-	ln -sfr "${TERMUX_PREFIX}/bin/the-powder-toy" "${TERMUX_PREFIX}/bin/powder"
-	${TERMUX_ELF_CLEANER} "${TERMUX_PREFIX}/bin/the-powder-toy"
+	install -Dm700 -t $TERMUX_PREFIX/bin powder
+	ln -sf powder $TERMUX_PREFIX/bin/the-powder-toy
+	install -Dm700 -t $TERMUX_PREFIX/share/applications resources/powder.desktop
+	install -Dm700 -T $TERMUX_PKG_SRCDIR/resources/generated_icons/icon_exe.png $TERMUX_PREFIX/share/pixmaps/powdertoy-powder.png
 }

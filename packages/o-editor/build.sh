@@ -2,9 +2,9 @@ TERMUX_PKG_HOMEPAGE=https://github.com/xyproto/o
 TERMUX_PKG_DESCRIPTION="Small, fast and limited text editor"
 TERMUX_PKG_LICENSE="BSD 3-Clause"
 TERMUX_PKG_MAINTAINER="Alexander F. Rødseth <xyproto@archlinux.org>"
-TERMUX_PKG_VERSION="2.55.1"
+TERMUX_PKG_VERSION="2.68.2"
 TERMUX_PKG_SRCURL=https://github.com/xyproto/o/archive/v$TERMUX_PKG_VERSION.tar.gz
-TERMUX_PKG_SHA256=727b1ee4df6e6fce81f8c8fe105328fb7ff6a7184d623ae0c28cc846001deaae
+TERMUX_PKG_SHA256=3facf3b4f066d9a6ba33a969fd0b540c224bdfdfde1d4abe3fcc70e072dbee1b
 TERMUX_PKG_AUTO_UPDATE=true
 TERMUX_PKG_BREAKS="o"
 TERMUX_PKG_REPLACES="o"
@@ -22,7 +22,8 @@ termux_step_make() {
 
 termux_step_make_install() {
 	install -Dm700 -t "$TERMUX_PREFIX"/bin \
-		"$GOPATH"/src/github.com/xyproto/o/v2/o
+		"$GOPATH"/src/github.com/xyproto/o/v2/orbiton
+	ln -sfT orbiton "$TERMUX_PREFIX"/bin/o
 	install -Dm600 -t "$TERMUX_PREFIX"/share/man/man1 \
 		"$TERMUX_PKG_SRCDIR"/o.1
 }
